@@ -14,7 +14,8 @@ class Sprite {
     layer;
     zindex = 1;
     repeatBehavior = "all";
-    repeatBoundaries = [0,0,0,0]
+    repeatBoundaries = [0,0]
+    opacity = 1;
 
     constructor(url="",x=0,y=0,width=0,height=0, spriteX=0,spriteY=0, spriteWidth=0,spriteHeight=0, doesRepeat=false) {
         this.spriteImg = new Image()
@@ -83,6 +84,7 @@ class AnimatedSprite {
     layer;
     zindex = 1;
     repeatBehavior = "all";
+    opacity = 1;
 
     constructor(url="",x=0,y=0,width=0,height=0, spriteX=0,spriteY=0, spriteWidth=0,spriteHeight=0, setFPS = 30) {
         this.spriteImg = new Image()

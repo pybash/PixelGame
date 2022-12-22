@@ -15,6 +15,12 @@ function compare( a, b ) {
         (a[0]> (b[0] + b[2]))
     );
 }
+function getCursorPosition(canvas, event) {
+    const rect = canvas.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    console.log("x: " + x + " y: " + y)
+}
 
   
 
@@ -39,8 +45,12 @@ class gameEngine {
 
     ]
     zIndexes = {}
+    uiEnvironment = [
+
+    ]
     engineFPS;
     highlightingCollisions = false;
+
 
     constructor(width=200,height=200, setFPS=60) {
         this.width = width;
@@ -76,7 +86,7 @@ class gameEngine {
                 this.zIndexes[allZindexes[x]].sort(compare)
                 // this.fillRect(this.worldEnvironment[x].spriteX, this.worldEnvironment[x].spriteY + this.worldEnvironment[x].height, 10, 10 )
                 for(let sprite = 0; sprite < this.zIndexes[allZindexes[x]].length; sprite++) {
-                    this.drawSprite(this.zIndexes[x][sprite])
+                    this.drawSprite(this.zIndexes[allZindexes[x]][sprite])
                 }
             }
             for(let x = 0; x < this.onRenderPriority.length; x++) {
@@ -92,6 +102,19 @@ class gameEngine {
 
                     }
 
+                }
+            }
+
+            for(let x = 0; x < this.uiEnvironment.length; x++) {
+                let uiElem = this.uiEnvironment[x];
+                if(uiElem.visible) {
+                    if(uiElem.spriteClass != undefined) {
+                        this.drawSprite(uiElem.spriteClass)
+                    } else {
+                        this.fillStyle(uiElem.backgroundColor);
+                        this.fillRect(uiElem.x,uiElem.y,uiElem.width,uiElem.height);
+                        this.fillStyle("#fff");
+                    }                
                 }
             }
 
@@ -121,6 +144,9 @@ class gameEngine {
                     this.keyListeners[keyCode]["keydown"][x]();
                 }
             }
+        })
+        canvas.addEventListener('mousedown', (e) => {
+            getCursorPosition(canvas, e)
         })
         this.ctx.imageSmoothingEnabled = false
     }
@@ -175,6 +201,8 @@ class gameEngine {
         }
     }
     drawSprite(spriteClass) {
+        this.ctx.globalAlpha = spriteClass.opacity
+
         if(spriteClass.isVisible) {
             if(spriteClass.doesRepeat) {
                 if(spriteClass.repeatBehavior == "all") {
@@ -203,6 +231,7 @@ class gameEngine {
         //     //     })
         //     // })
         // }
+        this.ctx.globalAlpha = 1
     }
     drawSpriteCollection(spriteCollection) {
         for(let x = 0; x < spriteCollection.length; x++) {
@@ -259,6 +288,11 @@ class gameEngine {
     }
 
     appendObject(object) {
+        if(object instanceof UIFrame) {
+            this.uiEnvironment.push(object);
+            return;
+        }
+
         let index = this.worldEnvironment.push(object)
 
         if(this.zIndexes[object.zindex] == undefined) {
@@ -268,12 +302,13 @@ class gameEngine {
     }
     appendObjects(list) {
         for(let x = 0; x < list.length; x++) {
-            let index = this.worldEnvironment.push(list[x])
+            // let index = this.worldEnvironment.push(list[x])
 
-            if(this.zIndexes[list[x].zindex] == undefined) {
-                this.zIndexes[list[x].zindex] = []
-            }
-            this.zIndexes[list[x]["zindex"]].push(this.worldEnvironment[index - 1])
+            // if(this.zIndexes[list[x].zindex] == undefined) {
+            //     this.zIndexes[list[x].zindex] = []
+            // }
+            // this.zIndexes[list[x]["zindex"]].push(this.worldEnvironment[index - 1])
+            this.appendObject(list[x])
         }
     }
     removeUpdate(id) {

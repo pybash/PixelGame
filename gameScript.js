@@ -12,6 +12,21 @@ document.addEventListener("DOMContentLoaded", () => {
     let grassPath = new Sprite("./resource/grasstilesheet.png");
     let grassPath2 = new Sprite("./resource/grasstilesheet.png");
     let grassPath3 = new Sprite("./resource/grasstilesheet.png");
+    let buttonSprite = new Sprite("./resource/buttons.png")
+
+    buttonSprite.selectSpriteImage(32,40,8,8,3);
+    buttonSprite.zindex = 3;
+    buttonSprite.opacity = 1
+
+    let frameUI = new UIFrame();
+    frameUI.setPos(30,30);
+    frameUI.setSize(40,40)
+    frameUI.backgroundColor = "#999"
+    frameUI.visible = true;
+    frameUI.setSprite(buttonSprite)
+
+    
+
 
     grassPath.setPos(20,20)
     grassPath.selectSpriteImage(129,59,16,16,4)
@@ -48,6 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let player = new Player(engine);
     player.movementSpeed = 4;
     player.addCollision(player.x + 15,player.y,35,65)
+    player.setPos(400,400)
+
 
     treeSprite.setPos(90,20)
     treeSprite.selectSpriteImage(11,7,28,52,3);
@@ -149,6 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 characterMoveUp.resume()
             }
         }
+
     })
     engine.appendObject(treeSprite)
     engine.appendObject(jojamart)
@@ -156,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
     engine.appendObject(swings)
     engine.addCollision(250,100, 256*1.4,80*1.4);
     engine.appendObjects([grassPath,grassPath2,grassPath3])
-    
+    engine.appendObject(frameUI);
     engine.addCollision(130,120,20,2)
     // engine.highlightCollisions();
     // player.highlightCollisions()
